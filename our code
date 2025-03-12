@@ -1,2 +1,34 @@
-our code 
-hjhf,r.u
+
+def fifo_inventory_value(transactions):
+    inventory = []
+    total_value = 0
+
+    for txn in transactions:
+        if txn["type"] == "in":
+            inventory.append({"quantity": txn["quantity"], "unit_cost": txn["unit_cost"]})
+        elif txn["type"] == "out":
+            qty_to_remove = txn["quantity"]
+            while qty_to_remove > 0 and inventory:
+                batch = inventory[0]
+                if batch["quantity"] <= qty_to_remove:
+                    qty_to_remove -= batch["quantity"]
+                    inventory.pop(0)
+                else:
+                    batch["quantity"] -= qty_to_remove
+                    qty_to_remove = 0
+
+    # Calculate total value of remaining inventory
+    for batch in inventory:
+        total_value += batch["quantity"] * batch["unit_cost"]
+
+    return total_value
+
+
+# Example input
+transactions = [
+    {"date": "2024-01-01", "type": "in", "quantity": 100, "unit_cost": 10},
+    {"date": "2024-01-15", "type": "out", "quantity": 50, "unit_cost": 10},
+    {"date": "2024-02-01", "type": "in", "quantity": 75, "unit_cost": 12}
+]
+
+print("Total value of remaining inventory:", fifo_inventory_value(transactions))
