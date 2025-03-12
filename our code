@@ -1,3 +1,29 @@
+первое задание: 
+def forex_conversion_table(base_currency, target_currencies, amount):
+    print(f"\nForeign Exchange Rate Conversion Table (Base: {base_currency}, Amount: {amount})")
+    print(f"{'Target Currency':<15}{'Exchange Rate':<15}{'Converted Amount':<20}")
+    print("-" * 50)
+
+    for currency in target_currencies:
+        converted_amount = amount * currency["rate"]
+        print(f"{currency['currency']:<15}{currency['rate']:<15}{converted_amount:<20.2f}")
+
+# Example input
+base_currency = "USD"
+target_currencies = [
+    {"currency": "EUR", "rate": 0.85},
+    {"currency": "JPY", "rate": 150},
+    {"currency": "GBP", "rate": 0.75},
+    {"currency": "CAD", "rate": 1.25}
+]
+amount = 100
+
+forex_conversion_table(base_currency, target_currencies, amount)
+
+
+
+
+
 второе задание:
 def fifo_inventory_value(transactions):
     inventory = []
