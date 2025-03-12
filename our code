@@ -1,4 +1,4 @@
-
+второе задание:
 def fifo_inventory_value(transactions):
     inventory = []
     total_value = 0
