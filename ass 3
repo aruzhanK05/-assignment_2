@@ -1,0 +1,142 @@
+The ass 3? there are two codes? they do not work btw ^_^
+
+
+import requests
+from bs4 import BeautifulSoup
+import json
+import csv
+
+# Список поддерживаемых криптовалют
+SUPPORTED_CRYPTO = {
+    "BTC": "Bitcoin",
+    "ETH": "Ethereum",
+    "ADA": "Cardano",
+    "XRP": "XRP",
+    "DOGE": "Dogecoin",
+    "LTC": "Litecoin",
+    "BNB": "Binance Coin",
+    "SOL": "Solana",
+    "DOT": "Polkadot",
+    "AVAX": "Avalanche"
+}
+
+def fetch_news(crypto_symbol, keyword=None):
+    """
+    Получает последние новости по указанной криптовалюте с Google News.
+    """
+    if crypto_symbol not in SUPPORTED_CRYPTO:
+        raise ValueError("Криптовалюта не поддерживается. Выберите из: " + ", ".join(SUPPORTED_CRYPTO.keys()))
+    
+    query = SUPPORTED_CRYPTO[crypto_symbol] + " cryptocurrency news"
+    if keyword:
+        query += " " + keyword
+    
+    url = f"https://www.google.com/search?q={query}&tbm=nws"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code != 200:
+        raise Exception(f"Ошибка запроса: {response.status_code}")
+    
+    soup = BeautifulSoup(response.text, "html.parser")
+    articles = soup.find_all("div", class_="BNeawe vvjwJb AP7Wnd")
+    links = soup.find_all("a", href=True)
+    
+    news_list = []
+    for i in range(min(5, len(articles))):  # Берём 5 новостей
+        title = articles[i].text
+        link = "https://www.google.com" + links[i]['href']
+        news_list.append({"title": title, "link": link})
+    
+    return news_list
+
+
+def save_to_json(news_list, filename):
+    """Сохраняет новости в JSON-файл."""
+    with open(filename, "w", encoding="utf-8") as file:
+        json.dump(news_list, file, ensure_ascii=False, indent=4)
+    print(f"Данные сохранены в {filename}")
+
+
+def save_to_csv(news_list, filename):
+    """Сохраняет новости в CSV-файл."""
+    with open(filename, "w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow(["Title", "Link"])
+        for news in news_list:
+            writer.writerow([news["title"], news["link"]])
+    print(f"Данные сохранены в {filename}")
+
+
+if __name__ == "__main__":
+    crypto = input("Введите символ криптовалюты (например, BTC): ").upper()
+    keyword = input("Введите ключевое слово (или оставьте пустым): ")
+    news = fetch_news(crypto, keyword)
+    
+    if news:
+        print("Найденные новости:")
+        for item in news:
+            print(f"- {item['title']} ({item['link']})")
+        
+        save_to_json(news, "crypto_news.json")
+        save_to_csv(news, "crypto_news.csv")
+    else:
+        print("Нет новостей для данной криптовалюты.")
+
+
+
+
+
+
+
+
+
+
+import feedparser
+import json
+import csv
+
+def fetch_news(crypto, keyword=""):
+    url = f"https://news.google.com/rss/search?q={crypto}"
+    feed = feedparser.parse(url)
+    
+    news_list = []
+    for entry in feed.entries[:5]:  # Берём 5 новостей
+        title = entry.title
+        link = entry.link
+        published = entry.published
+        
+        if keyword.lower() in title.lower():
+            news_list.append({
+                "title": title,
+                "link": link,
+                "date": published
+            })
+    
+    return news_list
+
+def save_news(news, filename, format="json"):
+    if format == "json":
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(news, f, ensure_ascii=False, indent=4)
+    elif format == "csv":
+        with open(filename, "w", encoding="utf-8", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=["title", "link", "date"])
+            writer.writeheader()
+            writer.writerows(news)
+
+# 🔹 Ввод пользователя
+crypto = input("Введите символ криптовалюты (например, BTC): ")
+keyword = input("Введите ключевое слово (или оставьте пустым): ")
+
+news = fetch_news(crypto, keyword)
+if news:
+    for idx, article in enumerate(news, start=1):
+        print(f"{idx}. {article['title']} ({article['date']})")
+        print(f"   {article['link']}\n")
+    
+    save_news(news, "crypto_news.json", format="json")
+    save_news(news, "crypto_news.csv", format="csv")
+    print("✅ Новости сохранены в crypto_news.json и crypto_news.csv")
+else:
+    print("❌ Нет новостей для данной криптовалюты.")
