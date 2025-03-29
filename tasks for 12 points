@@ -1,0 +1,140 @@
+THE 1 TASK (FOR 2 POINTS):
+
+import requests
+from bs4 import BeautifulSoup
+
+def parse_top_cryptocurrencies():
+    url = "https://coinmarketcap.com/"
+    headers = {"User-Agent": "Mozilla/5.0"}
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return f"Ошибка {response.status_code}: Не удалось загрузить страницу"
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    cryptos = []
+
+    # Поиск всех строк таблицы (берем 10 первых)
+    rows = soup.select("table.cmc-table tbody tr")[:10]
+
+    for row in rows:
+        name_tag = row.select_one("td:nth-child(3) a")  # Название
+        price_tag = row.select_one("td:nth-child(4) span")  # Цена
+
+        name = name_tag.text.strip() if name_tag else "N/A"
+        price = price_tag.text.strip() if price_tag else "N/A"
+
+        cryptos.append(f"{name}: {price}")
+
+    return "\n".join(cryptos)
+
+# Вывод результата
+print(parse_top_cryptocurrencies())
+
+
+
+
+
+
+
+
+
+TTHE 2 TASK (FOR 12 POINTS):
+
+import requests
+from bs4 import BeautifulSoup
+
+def parse_top_cryptocurrencies():
+    url = "https://coinmarketcap.com/"
+    headers = {"User-Agent": "Mozilla/5.0"}
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return f"Ошибка {response.status_code}: Не удалось загрузить страницу"
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    cryptos = []
+    
+    # Берем строки с таблицы (первые 10)
+    rows = soup.select('tbody tr')[:10]
+
+    for row in rows:
+        name_tag = row.find("p", class_="kKpPOn")  # Название
+        price_tag = row.find("span", class_="hDWSuh")  # Цена
+
+        name = name_tag.text if name_tag else "N/A"
+        price = price_tag.text if price_tag else "N/A"
+
+        cryptos.append(f"{name}: {price}")  
+
+    return "\n".join(cryptos)
+
+# Вывод результата
+print(parse_top_cryptocurrencies())
+
+import requests
+from bs4 import BeautifulSoup
+
+def parse_top_cryptocurrencies():
+    url = "https://coinmarketcap.com/"
+    headers = {"User-Agent": "Mozilla/5.0"}
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return f"Ошибка {response.status_code}: Не удалось загрузить страницу"
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    cryptos = []
+    
+    # Берем строки с таблицы (первые 10)
+    rows = soup.select('tbody tr')[:10]
+
+    for row in rows:
+        name_tag = row.find("p", class_="kKpPOn")  # Название
+        price_tag = row.find("span", class_="hDWSuh")  # Цена
+
+        name = name_tag.text if name_tag else "N/A"
+        price = price_tag.text if price_tag else "N/A"
+
+        cryptos.append(f"{name}: {price}")  
+
+    return "\n".join(cryptos)
+
+# Вывод результата
+print(parse_top_cryptocurrencies())
+
+
+import requests
+from bs4 import BeautifulSoup
+
+def parse_top_cryptocurrencies():
+    url = "https://coinmarketcap.com/"
+    headers = {"User-Agent": "Mozilla/5.0"}
+
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return f"Ошибка {response.status_code}: Не удалось загрузить страницу"
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    cryptos = []
+
+    # Поиск всех строк таблицы (берем 10 первых)
+    rows = soup.select("table.cmc-table tbody tr")[:10]
+
+    for row in rows:
+        name_tag = row.select_one("td:nth-child(3) a")  # Название
+        price_tag = row.select_one("td:nth-child(4) span")  # Цена
+
+        name = name_tag.text.strip() if name_tag else "N/A"
+        price = price_tag.text.strip() if price_tag else "N/A"
+
+        cryptos.append(f"{name}: {price}")
+
+    return "\n".join(cryptos)
+
+# Вывод результата
+print(parse_top_cryptocurrencies())
+
+
+
+
