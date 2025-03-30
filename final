@@ -39,22 +39,22 @@ def fetch_and_save_pages():
             with open(file_path, "wb") as file:
                 file.write(page_content)
 
-            print(f"✅ Successfully saved {symbol} page!")
+            print(f" Successfully saved {symbol} page!")
 
             # Pause between requests to prevent blocking
             time.sleep(2)
 
         except urllib.error.HTTPError as e:
-            print(f"❌ HTTP Error for {symbol}: {e.code} - {e.reason}")
+            print(f" HTTP Error for {symbol}: {e.code} - {e.reason}")
         except urllib.error.URLError as e:
-            print(f"❌ URL Error for {symbol}: {e.reason}")
+            print(f" URL Error for {symbol}: {e.reason}")
 
 # Function to extract news from saved HTML files
 def extract_crypto_news(crypto_symbol, keywords=None):
     crypto_symbol = crypto_symbol.upper()
 
     if crypto_symbol not in crypto_data:
-        print(f"⚠️ Invalid cryptocurrency! Choose from: {list(crypto_data.keys())}!")
+        print(f"! Invalid cryptocurrency! Choose from: {list(crypto_data.keys())}!")
         return []
 
     file_path = crypto_data[crypto_symbol]["file"]
@@ -63,13 +63,13 @@ def extract_crypto_news(crypto_symbol, keywords=None):
         with open(file_path, "r", encoding="utf-8") as file:
             soup = BeautifulSoup(file, "html.parser")
     except FileNotFoundError:
-        print(f"❌ Error: HTML file for {crypto_symbol} not found at {file_path}")
+        print(f"!!! Error: HTML file for {crypto_symbol} not found at {file_path}")
         return []
 
     # Locate the news section
     news_section = soup.find("div", class_="tw-my-6 lg:tw-mb-12")
     if not news_section:
-        print(f"⚠️ Could not find news section for {crypto_symbol}!")
+        print(f"!!! Could not find news section for {crypto_symbol}!")
         return []
 
     # Extract latest news articles (for filtering)
@@ -112,7 +112,7 @@ def extract_crypto_news(crypto_symbol, keywords=None):
 
     return extracted_news  # Returns a list of dictionaries
 
-# Function to save extracted news to a CSV file (Formatted for Excel)
+# Function to save extracted news to a CSV file 
 def save_news_to_csv(news_list, filename):
     os.makedirs("news_data", exist_ok=True)  # Create a folder for CSV files if it doesn't exist
 
@@ -131,7 +131,7 @@ def save_news_to_csv(news_list, filename):
                 "Description": news["description"]
             })
 
-    print(f"✅ News saved successfully to {filepath}")
+    print(f"!News saved successfully to {filepath}")
 
 if __name__ == "__main__":
     # Step 1: Download and save CoinGecko pages
@@ -145,12 +145,12 @@ if __name__ == "__main__":
     # Step 3: Extract and display news
     news_list = extract_crypto_news(crypto_symbol, keywords)
 
-    print(f"\n📢 Latest {crypto_symbol} News Only For You:\n")
+    print(f"\n Latest {crypto_symbol} News Only For You:\n")
     print(news_list)  # Display the news list in dictionary format
 
     # Step 4: Save news to CSV
     if news_list:
-        filename = input("Enter filename for the CSV as coinname.csv (ex, btc.csv): ").strip()
+        filename = input("Enter filename for the CSV as coinname.csv (e.g, btc.csv): ").strip()
         save_news_to_csv(news_list, filename)
     else:
-        print("❌ No news found to save.")
+        print("!No news found to save!")
